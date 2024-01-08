@@ -1,0 +1,79 @@
+spring:
+  application:
+    name: ms-authentication
+  rabbitmq:
+    host: localhost
+    username: guest
+    password: guest
+    port: 5672
+
+  kafka:
+    bootstrap-servers: localhost:9091,localhost:9094,localhost:9093
+    producer:
+      client-id: ms-authentication
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: users.msauthentication.utils.CustomKafkaSerializer
+
+  jpa:
+    hibernate.ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/users
+    username: root
+    password: root
+
+  flyway:
+    url: jdbc:mysql://localhost:3306/users
+    schemas: users
+    user: root
+    password: root
+    baselineOnMigrate: true
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,fallback
+
+  endpoint:
+    health:
+      show-details: ALWAYS
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      ms-authentication:
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 10
+        failureRateThreshold: 50
+        minimumNumberOfCalls: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        slidingWindowType: COUNT_BASED
+
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET:1234}
+
+server:
+  port: 0
+
+eureka:
+  instance:
+    hostname: localhost
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+
