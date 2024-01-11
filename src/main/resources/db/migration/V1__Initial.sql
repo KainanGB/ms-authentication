@@ -1,0 +1,7 @@
+CREATE TABLE USERS (
+    user_id INT NOT NULL UNIQUE,
+	email VARCHAR(150) NOT NULL UNIQUE,
+    password VARCHAR(50) NOT NULL,
+    role VARCHAR(100) NOT NULL,
+    PRIMARY KEY (user_id, email)
+);
