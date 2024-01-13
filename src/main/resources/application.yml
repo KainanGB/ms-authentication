@@ -1,14 +1,9 @@
 spring:
   application:
     name: ms-authentication
-  rabbitmq:
-    host: localhost
-    username: guest
-    password: guest
-    port: 5672
 
   kafka:
-    bootstrap-servers: localhost:9091,localhost:9094,localhost:9093
+    bootstrap-servers: ${KAFKA_SERVER_1},${KAFKA_SERVER_2},${KAFKA_SERVER_3}
     producer:
       client-id: ms-authentication
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -22,12 +17,12 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
 
   datasource:
-    url: jdbc:mysql://localhost:3306/users
-    username: root
-    password: root
+    url: ${DATA_SOURCE_URL}
+    username: ${DATA_SOURCE_USERNAME}
+    password: ${DATA_SOURCE_PASSWORD}
 
   flyway:
-    url: jdbc:mysql://localhost:3306/users
+    url: ${FLYWAY_URL}
     schemas: users
     user: root
     password: root
@@ -63,7 +58,7 @@ resilience4j:
 api:
   security:
     token:
-      secret: ${JWT_SECRET:1234}
+      secret: ${JWT_SECRET}
 
 server:
   port: 0
