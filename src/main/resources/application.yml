@@ -1,9 +1,9 @@
 spring:
   application:
     name: ms-authentication
-
+  # KAFKA_SERVER_1=172.20.0.5:9091 --build-arg KAFKA_SERVER_2=172.20.0.4:9093 --build-arg KAFKA_SERVER_3=172.20.0.3:9094
   kafka:
-    bootstrap-servers: ${KAFKA_SERVER_1},${KAFKA_SERVER_2},${KAFKA_SERVER_3}
+    bootstrap-servers: http://172.20.0.3:9092,http://172.20.0.4:9092,http://172.20.0.2:9092
     producer:
       client-id: ms-authentication
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -17,14 +17,14 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
 
   datasource:
-    url: ${DATA_SOURCE_URL}
-    username: ${DATA_SOURCE_USERNAME}
-    password: ${DATA_SOURCE_PASSWORD}
+    url: jdbc:mysql://172.26.0.1:3306/users
+    username: user
+    password: root
 
   flyway:
-    url: ${FLYWAY_URL}
+    url: jdbc:mysql://172.26.0.1:3306/users
     schemas: users
-    user: root
+    user: user
     password: root
     baselineOnMigrate: true
 
@@ -58,17 +58,15 @@ resilience4j:
 api:
   security:
     token:
-      secret: ${JWT_SECRET}
+      secret: ${JWT_SECRET:1234}
 
 server:
   port: 0
 
 eureka:
   instance:
-    hostname: localhost
+    preferIpAddress: true
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
-
-
+      defaultZone: http://172.20.0.4:8761/eureka/
