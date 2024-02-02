@@ -4,6 +4,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class UsersController {
 
     @GetMapping("/me/{id}")
     @CircuitBreaker(name = "ms-authentication")
-    public ResponseEntity<UsersEntity> getById(@PathVariable Long id) throws JWTVerificationException {
+    public ResponseEntity<UserDTO> getById(@PathVariable Long id) throws JWTVerificationException {
         return ResponseEntity.ok(usersService.getById(id));
     }
 

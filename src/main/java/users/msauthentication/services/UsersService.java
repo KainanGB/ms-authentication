@@ -3,6 +3,7 @@ package users.msauthentication.services;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -68,7 +69,7 @@ public class UsersService {
         usersRepository.save(user);
     }
 
-    public UsersEntity getById(@PathVariable Long id) {
+    public UserDTO getById(@PathVariable Long id) {
         final var randomNumber = 1000 + new Random().nextLong(9000);
 
         final Message<EmailDTO> message = new Message<>(
@@ -81,7 +82,10 @@ public class UsersService {
         );
 
         sendEmailService.sendMessage(message);
-        return usersRepository.findById(id).orElseThrow();
+
+        UsersEntity user = usersRepository.findById(id).orElseThrow();
+
+        return  new UserDTO(user.getId(), user.getEmail(), user.getCreated_at().toString());
     }
 
 }
